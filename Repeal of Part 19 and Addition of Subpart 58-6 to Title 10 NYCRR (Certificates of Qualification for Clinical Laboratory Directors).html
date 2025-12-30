@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYS Clinical Laboratory Regulation Changes: Part 19 vs. Subpart 58-6</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #334155; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        .active-tab {
+            border-bottom: 2px solid #0f172a;
+            color: #0f172a;
+            font-weight: 600;
+        }
+        .inactive-tab {
+            color: #64748b;
+            cursor: pointer;
+        }
+        .inactive-tab:hover {
+            color: #334155;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        /* Custom scrollbar for table container if needed */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+    <!-- Chosen Palette: Slate & Blue (Professional, Regulatory, Clean) -->
+    <!-- Application Structure Plan: 
+         1. Header/Intro: Contextualizes the shift from Part 19 to Subpart 58-6.
+         2. Summary Dashboard: High-level impact metrics (charts) and the "Why" (Federal alignment).
+         3. The Core Comparison (Interactive Table): The user's specific request. A detailed side-by-side view of the changes, filterable by category.
+         4. Role Evolution: Interactive cards distinguishing the "Laboratory Director" from the "Technical Director" (a key change for the 85 affected individuals).
+         5. Implementation Timeline/Impact: Textual synthesis of the 'Regions of Adverse Impact' and 'Minimizing Adverse Impact'.
+         This structure moves from "Big Picture" -> "Specific Comparison" -> "Operational Detail", aiding understanding for diverse stakeholders.
+    -->
+    <!-- Visualization & Content Choices:
+         - Pie Chart: To show the proportion of labs affected (85/665). Goal: Inform magnitude of impact.
+         - Interactive Table: To handle the "Compare" request. Allows filtering rows to reduce cognitive load.
+         - Tabbed Content: To switch between Director and Technical Director definitions without cluttering the screen.
+         - Logic: Vanilla JS handles tab switching and table filtering.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="antialiased">
+
+    <!-- Navigation / Header -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center gap-2">
+                        <span class="text-2xl font-bold text-slate-800">Repeal of Part 19 and Addition of Subpart 58-6 to Title 10 NYCRR (Certificates of Qualification for Clinical Laboratory Directors)</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Analysis</span>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="#dashboard" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Dashboard</a>
+                        <a href="#comparison" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Comparison Table</a>
+                        <a href="#roles" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Role Changes</a>
+                        <a href="#impact" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Impact Analysis</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="bg-slate-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-3xl font-bold tracking-tight mb-4">Transitioning from Part 19 to Subpart 58-6</h1>
+            <p class="text-lg text-slate-300 max-w-3xl">
+                An analysis of the proposed regulatory changes for New York State Clinical Laboratory Directors.
+                This proposal aligns NYS requirements with CLIA and introduces a new Technical Director Certificate of Qualification.
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- DASHBOARD SECTION -->
+        <section id="dashboard" class="scroll-mt-20">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-slate-800">Dashboard</h2>
+                <p class="mt-2 text-gray-600">
+                    A driver for this regulatory update is to harmonize New York State standards with CLIA requirements. 
+                    This dashboard visualizes the scale of the impact and the core objectives of the transition from Part 19.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- KPI Card 1 -->
+                <div class="bg-white rounded-lg p-6 card-shadow border-l-4 border-blue-500">
+                    <h3 class="text-sm font-medium text-gray-500 uppercase">Total Labs</h3>
+                    <div class="mt-2 flex items-baseline">
+                        <span class="text-4xl font-bold text-slate-900">665</span>
+                        <span class="ml-2 text-sm text-gray-500">Permitted in NYS</span>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-600">Total clinical laboratories holding or applying for a permit.</p>
+                </div>
+
+                <!-- KPI Card 2 -->
+                <div class="bg-white rounded-lg p-6 card-shadow border-l-4 border-orange-500">
+                    <h3 class="text-sm font-medium text-gray-500 uppercase">Directors Affected</h3>
+                    <div class="mt-2 flex items-baseline">
+                        <span class="text-4xl font-bold text-slate-900">85</span>
+                        <span class="ml-2 text-sm text-gray-500">Individuals</span>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-600">Directors currently lacking board certification required by new rules.</p>
+                </div>
+
+                <!-- KPI Card 3 -->
+                <div class="bg-white rounded-lg p-6 card-shadow border-l-4 border-green-500">
+                    <h3 class="text-sm font-medium text-gray-500 uppercase">Goal</h3>
+                    <div class="mt-2 flex items-baseline">
+                        <span class="text-2xl font-bold text-slate-900">CLIA Compliance</span>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-600">Aligns with CLIA in order for NYS to secure it's status renewal in 2027.</p>
+                </div>
+            </div>
+
+            <!-- Chart Section -->
+            <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg card-shadow">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Impact</h3>
+                    <div class="chart-container">
+                        <canvas id="impactChart"></canvas>
+                    </div>
+                    <p class="text-center text-sm text-gray-500 mt-4">
+                        ~13% of current directors will need to transition to "Technical Director" roles or obtain certification.
+                    </p>
+                </div>
+                <div class="bg-white p-6 rounded-lg card-shadow flex flex-col justify-center">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Strategic Necessity</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-bold text-sm">1</div>
+                            <div class="ml-4">
+                                <h4 class="text-sm font-medium text-gray-900">Maintain Exemption</h4>
+                                <p class="text-sm text-gray-500">NYS needs to remain the primary accrediting authority. Failure to update by 2027 puts this at risk.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-bold text-sm">2</div>
+                            <div class="ml-4">
+                                <h4 class="text-sm font-medium text-gray-900">Prevent Duplication</h4>
+                                <p class="text-sm text-gray-500">Avoids creating duplicative oversight programs (State + Federal) for NY laboratories.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-bold text-sm">3</div>
+                            <div class="ml-4">
+                                <h4 class="text-sm font-medium text-gray-900">Standardization</h4>
+                                <p class="text-sm text-gray-500">Ensures all directors meet the same high standard: Board Certification.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMPARISON TABLE SECTION -->
+        <section id="comparison" class="scroll-mt-20">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-slate-800">Detailed Comparison: Part 19 vs. Subpart 58-6</h2>
+                <p class="mt-2 text-gray-600">
+                    This interactive table outlines the specific differences between the existing Part 19 regulations and the proposed Subpart 58-6. 
+                    The core shift is toward stricter qualification requirements for Directors, balancing this by formalizing the "Technical Director" role for those with technical expertise but lacking board certification.
+                </p>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex flex-wrap gap-2 mb-4" id="tableFilters">
+                <button onclick="filterTable('all')" class="px-4 py-2 rounded-full text-sm font-medium bg-slate-800 text-white hover:bg-slate-700 transition-colors">All</button>
+                <button onclick="filterTable('qualifications')" class="px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-600 border border-slate-300 hover:bg-slate-50 transition-colors">Qualifications</button>
+                <button onclick="filterTable('roles')" class="px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-600 border border-slate-300 hover:bg-slate-50 transition-colors">Roles & Duties</button>
+                <button onclick="filterTable('regulatory')" class="px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-600 border border-slate-300 hover:bg-slate-50 transition-colors">Regulatory Status</button>
+            </div>
+
+            <div class="bg-white rounded-lg card-shadow overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-1/4">Category</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-1/3">Existing: Part 19</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-blue-600 uppercase tracking-wider w-1/3">Proposed: Subpart 58-6</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="comparisonTableBody">
+                            <!-- JS will populate this -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ROLE EVOLUTION SECTION -->
+        <section id="roles" class="scroll-mt-20">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-slate-800">Role Evolution: Director vs. Technical Director</h2>
+                <p class="mt-2 text-gray-600">
+                    The proposal creates a clearer distinction between the overall administrative/clinical lead (Laboratory Director) and the technical expert (Technical Director). 
+                    This allows individuals who are highly skilled but lack board certification to continue serving in a vital technical capacity.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-lg card-shadow">
+                <div class="border-b border-gray-200">
+                    <nav class="-mb-px flex" aria-label="Tabs">
+                        <button onclick="switchTab('director')" id="tab-director" class="active-tab w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm">
+                            Laboratory Director (Section 58-6.2/3)
+                        </button>
+                        <button onclick="switchTab('technical')" id="tab-technical" class="inactive-tab w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm">
+                            Technical Director (Section 58-6.4/5)
+                        </button>
+                    </nav>
+                </div>
+
+                <div class="p-6">
+                    <!-- Director Content -->
+                    <div id="content-director" class="block">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-900 mb-3">Qualifications</h3>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start">
+                                        <span class="text-green-500 mr-2">✓</span>
+                                        <span class="text-gray-700">Must hold a certificate of qualification.</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-green-500 mr-2">✓</span>
+                                        <span class="text-gray-700 font-semibold">Mandatory Board Certification</span>
+                                        <span class="text-gray-500 text-sm ml-1">(Recognized accrediting board).</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-green-500 mr-2">✓</span>
+                                        <span class="text-gray-700">Aligns with CLIA Requirements.</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-900 mb-3">Key Responsibilities</h3>
+                                <p class="text-gray-600 mb-4">Overall responsibility for the administration and the technical and scientific operation of the laboratory.</p>
+                                <div class="bg-blue-50 p-4 rounded-md border border-blue-100">
+                                    <p class="text-sm text-blue-800"><strong>Note:</strong> ~85 current directors will no longer qualify for this specific title but may transition to Technical Director.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Technical Director Content -->
+                    <div id="content-technical" class="hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-900 mb-3">Qualifications</h3>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start">
+                                        <span class="text-green-500 mr-2">✓</span>
+                                        <span class="text-gray-700">Requires certificate of qualification (Specific Categories).</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-green-500 mr-2">✓</span>
+                                        <span class="text-gray-700 font-semibold">Eligible without Board Certification</span>
+                                        <span class="text-gray-500 text-sm ml-1">(if category-specific criteria are met).</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-green-500 mr-2">✓</span>
+                                        <span class="text-gray-700">Consistent with CLIA "Technical Supervisor".</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-900 mb-3">Key Responsibilities</h3>
+                                <p class="text-gray-600 mb-4">Responsible for the technical and scientific oversight of specific laboratory specialties.</p>
+                                <div class="bg-green-50 p-4 rounded-md border border-green-100">
+                                    <p class="text-sm text-green-800"><strong>Pathway:</strong> This is the designated role for the 85 directors currently without board certification, ensuring they can remain employed.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- IMPACT & IMPLEMENTATION -->
+        <section id="impact" class="scroll-mt-20 pb-12">
+            <div class="bg-slate-50 rounded-xl p-8 border border-slate-200">
+                <div class="max-w-3xl mx-auto">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-4 text-center">Implementation & Adverse Impact Analysis</h2>
+                    
+                    <div class="space-y-6 text-gray-700">
+                        <div class="bg-white p-6 rounded-lg shadow-sm">
+                            <h3 class="font-semibold text-slate-900">Who is affected?</h3>
+                            <p class="mt-2">The changes apply to all regions of the State. Specifically, <strong>85 out of 665 laboratories</strong> currently employ directors who do not meet the new board certification requirement.</p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg shadow-sm">
+                            <h3 class="font-semibold text-slate-900">Can the impact be minimized?</h3>
+                            <p class="mt-2">
+                                The report states there is <strong>no available mechanism to further minimize impact</strong>, as this is to align with CLIA requirements.
+                            </p>
+                            <p class="mt-2 text-sm text-gray-500 italic">
+                                "Failure to make these revisions could result in the denial of that exemption in 2027, which would create duplicative laboratory oversight programs..."
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg shadow-sm">
+                            <h3 class="font-semibold text-slate-900">Alternative for Affected Personnel</h3>
+                            <p class="mt-2">
+                                While they cannot serve as "Laboratory Director", these individuals <strong>may be eligible to serve as Technical Directors</strong>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        
+            
+        </div>
+    </footer>
+
+    <script>
+        // Data for the Comparison Table
+        const comparisonData = [
+            {
+                category: 'qualifications',
+                feature: 'Board Certification',
+                old: 'Not strictly required for all directors (Historic/Grandfathered provisions implied).',
+                new: '<strong>Mandatory</strong>. Must hold certification from a recognized accrediting board. An individual holding a certificate of qualification prior to the implementation of this regulation who does not meet the qualification requirements, may continue to serve until <strong>January 1, 2027</strong>.'
+            },
+            {
+                category: 'roles',
+                feature: 'Director Role Structure',
+                old: 'General Laboratory Director role.',
+                new: '<strong>Laboratory Director</strong> (Overall) vs. <strong>Technical Director</strong> (Specialty Specific).'
+            },
+            {
+                category: 'regulatory',
+                feature: 'CLIA Alignment',
+                old: 'Partially aligned / Outdated.',
+                new: '<strong>Aligns</strong> with CLIA.'
+            },
+            {
+                category: 'qualifications',
+                feature: 'Eligibility for Uncertified Directors',
+                old: 'Could serve as Laboratory Director.',
+                new: '<strong>No longer eligible</strong> as Lab Director. Must transition to Technical Director.'
+            },
+                {
+                category: 'roles',
+                feature: 'Technical Supervisor',
+                old: 'Implicit or less defined.',
+                new: 'Explicitly defined as <strong>Technical Director</strong> (Section 58-6.4).'
+            }
+        ];
+
+        // Render Table Function
+        function renderTable(filter) {
+            const tbody = document.getElementById('comparisonTableBody');
+            tbody.innerHTML = '';
+
+            const filteredData = filter === 'all' 
+                ? comparisonData 
+                : comparisonData.filter(item => item.category === filter);
+
+            filteredData.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                tr.className = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+                
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-normal text-sm font-medium text-gray-900">${row.feature}</td>
+                    <td class="px-6 py-4 whitespace-normal text-sm text-gray-500">${row.old}</td>
+                    <td class="px-6 py-4 whitespace-normal text-sm text-gray-700 border-l-4 border-blue-500 bg-blue-50/30">${row.new}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Filter Button Logic
+        function filterTable(category) {
+            renderTable(category);
+            // Update button styles
+            const buttons = document.querySelectorAll('#tableFilters button');
+            buttons.forEach(btn => {
+                const isActive = btn.getAttribute('onclick').includes(`'${category}'`);
+                if (isActive) {
+                    btn.className = "px-4 py-2 rounded-full text-sm font-medium bg-slate-800 text-white hover:bg-slate-700 transition-colors shadow-md";
+                } else {
+                    btn.className = "px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-600 border border-slate-300 hover:bg-slate-50 transition-colors";
+                }
+            });
+        }
+
+        // Tab Logic
+        function switchTab(tabName) {
+            const directorContent = document.getElementById('content-director');
+            const technicalContent = document.getElementById('content-technical');
+            const directorTab = document.getElementById('tab-director');
+            const technicalTab = document.getElementById('tab-technical');
+
+            if (tabName === 'director') {
+                directorContent.classList.remove('hidden');
+                technicalContent.classList.add('hidden');
+                
+                directorTab.className = 'active-tab w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm';
+                technicalTab.className = 'inactive-tab w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm';
+            } else {
+                directorContent.classList.add('hidden');
+                technicalContent.classList.remove('hidden');
+
+                directorTab.className = 'inactive-tab w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm';
+                technicalTab.className = 'active-tab w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm';
+            }
+        }
+
+        // Chart.js Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTable('all');
+
+            const ctx = document.getElementById('impactChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Directors Meeting New Requirements', 'Directors Needing Transition (Affected)'],
+                    datasets: [{
+                        data: [665 - 85, 85],
+                        backgroundColor: ['#e2e8f0', '#f97316'], // Slate-200, Orange-500
+                        borderColor: ['#ffffff', '#ffffff'],
+                        borderWidth: 2,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    let value = context.raw;
+                                    let total = context.chart._metasets[context.datasetIndex].total;
+                                    let percentage = Math.round((value / total) * 100) + '%';
+                                    return label + value + ' (' + percentage + ')';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
